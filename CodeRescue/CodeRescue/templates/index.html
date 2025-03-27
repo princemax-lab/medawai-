@@ -1,0 +1,240 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Hero Section -->
+    <section class="text-center mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <h1 class="display-4 fw-bold">
+                    <i class="fas fa-capsules text-primary me-2"></i>
+                    MedAWAI
+                </h1>
+                <p class="lead text-muted">AI-powered medicine recommendations based on your symptoms</p>
+                <div class="d-flex justify-content-center mt-4">
+                    <a href="#symptom-checker" class="btn btn-primary btn-lg px-4 me-md-2">
+                        <i class="fas fa-heartbeat me-2"></i>Check Your Symptoms
+                    </a>
+                    <a href="#disclaimer" class="btn btn-outline-secondary btn-lg px-4">
+                        <i class="fas fa-info-circle me-2"></i>Medical Disclaimer
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Symptom Checker Form -->
+    <section id="symptom-checker" class="my-5">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">
+                    <i class="fas fa-clipboard-list me-2"></i>Symptom Checker
+                </h3>
+            </div>
+            <div class="card-body">
+                <form id="symptom-form">
+                    <!-- Basic Info -->
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label for="age" class="form-label">Age</label>
+                            <input type="number" class="form-control" id="age" min="1" max="120" required>
+                            <div class="invalid-feedback">Please enter a valid age.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="gender" class="form-label">Gender</label>
+                            <select class="form-select" id="gender">
+                                <option value="">Prefer not to say</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Method Selection Tabs -->
+                    <div class="mb-4">
+                        <ul class="nav nav-tabs" id="symptomEntryTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="select-symptoms-tab" data-bs-toggle="tab" 
+                                        data-bs-target="#select-symptoms" type="button" role="tab" 
+                                        aria-controls="select-symptoms" aria-selected="true">
+                                    <i class="fas fa-list-check me-1"></i>Select Symptoms
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="describe-symptoms-tab" data-bs-toggle="tab" 
+                                        data-bs-target="#describe-symptoms" type="button" role="tab" 
+                                        aria-controls="describe-symptoms" aria-selected="false">
+                                    <i class="fas fa-keyboard me-1"></i>Describe Your Symptoms
+                                </button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content pt-3" id="symptomEntryTabContent">
+                            <!-- Tab 1: Select Symptoms -->
+                            <div class="tab-pane fade show active" id="select-symptoms" role="tabpanel" 
+                                 aria-labelledby="select-symptoms-tab">
+                                <label class="form-label">
+                                    <i class="fas fa-stethoscope me-1"></i>Select Your Symptoms (choose all that apply)
+                                </label>
+
+                                <!-- Search Box -->
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="text" class="form-control" id="symptom-search" placeholder="Search for symptoms...">
+                                    <button class="btn btn-outline-secondary" type="button" id="mic-button" onclick="toggleVoiceInput()">
+                                        <i class="fas fa-microphone"></i>
+                                    </button>
+                                </div>
+
+                                <div class="row symptom-container">
+                                    {% for symptom in symptoms %}
+                                    <div class="col-md-6 col-lg-4 mb-2 symptom-item">
+                                        <div class="form-check">
+                                            <input class="form-check-input symptom-checkbox" type="checkbox" 
+                                                   value="{{ symptom.id }}" id="symptom{{ symptom.id }}">
+                                            <label class="form-check-label" for="symptom{{ symptom.id }}" 
+                                                   data-bs-toggle="tooltip" title="{{ symptom.description }}">
+                                                {{ symptom.name }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- Tab 2: Describe Symptoms -->
+                            <div class="tab-pane fade" id="describe-symptoms" role="tabpanel" 
+                                 aria-labelledby="describe-symptoms-tab">
+                                <label for="symptom-description" class="form-label">
+                                    <i class="fas fa-comment-medical me-1"></i>Describe Your Symptoms In Your Own Words
+                                </label>
+                                <textarea class="form-control" id="symptom-description" rows="4" 
+                                          placeholder="Example: I have a headache and fever since yesterday. My throat is sore and I'm feeling tired."></textarea>
+                                <div class="form-text mt-1">
+                                    Be as specific as possible. Include when symptoms started, their severity, and any other relevant information.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="invalid-feedback" id="symptoms-feedback">Please select at least one symptom or describe your symptoms.</div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg px-5" id="recommend-btn">
+                            <i class="fas fa-search me-2"></i>Get Recommendations
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Loading Spinner -->
+                <div id="loading" class="text-center my-5 d-none">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Analyzing your symptoms...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section (hidden initially) -->
+    <section id="results-section" class="mt-5 d-none">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h3 class="mb-0">
+                    <i class="fas fa-prescription-bottle-alt me-2"></i>Recommended Medicines
+                </h3>
+            </div>
+            <div class="card-body">
+                <div id="no-results" class="alert alert-info d-none" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    We couldn't find specific recommendations based on your symptoms. Please consult a healthcare professional.
+                </div>
+
+                <div id="recommendations-container"></div>
+            </div>
+            <div class="card-footer">
+                <div class="alert alert-warning" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Medical Disclaimer:</strong> These recommendations are for informational purposes only and do not 
+                    constitute medical advice. Always consult with a qualified healthcare provider before 
+                    starting any medication.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Error Alert (hidden initially) -->
+    <div class="alert alert-danger mt-4 d-none" id="error-alert" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span id="error-message">An error occurred. Please try again.</span>
+    </div>
+
+    <!-- About Section -->
+    <section id="about" class="my-5">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-info text-white">
+                <h3 class="mb-0">About MedAWAI</h3>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h4>How It Works</h4>
+                        <p>MedAWAI uses an artificial intelligence system to analyze your symptoms and recommend appropriate over-the-counter medicines. Our recommendations are based on established medical guidelines and symptom-medicine relationships.</p>
+
+                        <h4>Benefits</h4>
+                        <ul>
+                            <li>Quick and easy access to medicine recommendations</li>
+                            <li>Personalized suggestions based on your specific symptoms</li>
+                            <li>Detailed information about each recommended medicine</li>
+                            <li>Easy-to-understand descriptions and dosage guidelines</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <i class="fas fa-laptop-medical text-info" style="font-size: 8rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pharmacy Locator Section -->
+    <section id="pharmacy-locator" class="my-5 d-none">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-info">
+                <h3 class="mb-0">Find Nearby Pharmacies</h3>
+            </div>
+            <div class="card-body">
+                <div id="map" style="height: 400px;"></div>
+                <div class="mt-3">
+                    <button class="btn btn-primary" onclick="findNearbyPharmacies()">
+                        <i class="fas fa-location-dot me-2"></i>Find Nearby Pharmacies
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Disclaimer Section -->
+    <section id="disclaimer" class="my-5">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-warning text-dark">
+                <h3 class="mb-0">Medical Disclaimer</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <h4><i class="fas fa-exclamation-triangle me-2"></i>Important Notice</h4>
+                    <p>The information provided by MedAWAI is for informational purposes only and is not intended as a substitute for professional medical advice, diagnosis, or treatment.</p>
+                </div>
+
+                <p>Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition. Never disregard professional medical advice or delay in seeking it because of something you have read on this website.</p>
+
+                <p>If you think you may have a medical emergency, call your doctor or emergency services immediately. MedAWAI does not recommend or endorse any specific tests, physicians, products, procedures, opinions, or other information that may be mentioned on the website.</p>
+
+                <p>Reliance on any information provided by MedAWAI is solely at your own risk.</p>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

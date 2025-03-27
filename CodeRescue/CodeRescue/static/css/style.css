@@ -1,0 +1,295 @@
+/* Custom styles for MedAWAI application */
+
+/* Global styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* Improved focus states for accessibility */
+:focus {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+}
+
+/* Custom tooltip styling */
+.tooltip-inner {
+    max-width: 300px;
+    padding: 10px;
+}
+
+/* Card hover effects */
+.medicine-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.medicine-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Symptom tag styling */
+.symptom-tag {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    margin: 0.1rem;
+    background-color: var(--bs-info-bg-subtle);
+    color: var(--bs-info-text);
+    border-radius: 16px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+/* Better spacing for mobile */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    
+    h1.display-4 {
+        font-size: 2.5rem;
+    }
+    
+    .row {
+        margin-left: -10px;
+        margin-right: -10px;
+    }
+    
+    .col, [class*="col-"] {
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bs-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--bs-primary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--bs-primary-bg-subtle);
+}
+
+/* Relevance Score indicators */
+.relevance-high {
+    color: var(--bs-success);
+}
+
+.relevance-medium {
+    color: var(--bs-warning);
+}
+
+.relevance-low {
+    color: var(--bs-danger);
+}
+
+/* Animation for loading spinner */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Additional styling for form elements */
+.form-control:focus, .form-select:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+/* Highlight selected symptoms */
+.symptom-checkbox:checked + .form-check-label {
+    color: var(--bs-primary);
+    font-weight: 500;
+}
+
+/* Improved alerts */
+.alert {
+    border: none;
+    border-radius: 0.5rem;
+}
+
+/* Accordion custom styling */
+.accordion-button:not(.collapsed) {
+    background-color: var(--bs-primary-bg-subtle);
+    color: var(--bs-primary);
+}
+
+/* Footer styling */
+.footer {
+    margin-top: auto;
+}
+
+/* Symptom search box styling */
+#symptom-search {
+    border: 1px solid var(--bs-border-color);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+#symptom-search:focus {
+    box-shadow: 0 3px 8px rgba(var(--bs-primary-rgb), 0.2);
+}
+
+/* Symptom item transitions */
+.symptom-item {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Highlight matching symptoms during search */
+.symptom-item.highlight {
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+    border-radius: 0.375rem;
+}
+
+/* Symptom description textarea */
+#symptom-description {
+    resize: vertical;
+    min-height: 120px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+#symptom-description:focus {
+    box-shadow: 0 3px 8px rgba(var(--bs-primary-rgb), 0.2);
+}
+
+/* Tab transitions */
+.tab-content .tab-pane {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Identified symptoms list */
+.identified-symptoms-list li {
+    margin-bottom: 0.5rem;
+}
+
+/* Best match card */
+.border-success {
+    border-width: 2px !important;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+    
+    /* Improve touch targets */
+    .symptom-item {
+        padding: 12px 0;
+    }
+    
+    .form-check-label {
+        padding: 12px 0;
+        font-size: 16px;
+    }
+    
+    /* Adjust button sizes for better touch */
+    .btn {
+        padding: 14px 24px;
+        margin: 8px 0;
+        font-size: 16px;
+        width: 100%;
+    }
+    
+    /* Make search more prominent */
+    #symptom-search {
+        height: 48px;
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+    
+    /* Stack navigation items */
+    .navbar-nav {
+        margin-top: 15px;
+    }
+
+    /* Adjust headings */
+    h1.display-4 {
+        font-size: 2rem;
+    }
+
+    /* Make cards more compact */
+    .card {
+        margin-bottom: 15px;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    /* Improve form spacing */
+    .form-control, .form-select {
+        margin-bottom: 10px;
+        height: 48px;
+    }
+
+    /* Make tooltips work better on touch */
+    .tooltip {
+        display: none !important;
+    }
+
+    /* Improve map responsiveness */
+    #map {
+        height: 300px !important;
+    }
+}
+
+/* Match percentage badges */
+.badge.relevance-high {
+    background-color: var(--bs-success) !important;
+}
+
+.badge.relevance-medium {
+    background-color: var(--bs-warning) !important;
+}
+
+.badge.relevance-low {
+    background-color: var(--bs-danger) !important;
+}
+
+/* Best match icon effects */
+.position-relative .display-1 {
+    transition: transform 0.3s ease-in-out;
+}
+
+.position-relative:hover .display-1 {
+    transform: scale(1.1);
+}
+
+/* Match percentage display */
+.card-header .badge {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.bg-white.text-success {
+    font-weight: 600;
+}
+
+/* Alternative recommendations header */
+h4.mt-4.mb-3 {
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(var(--bs-secondary-rgb), 0.2);
+}
